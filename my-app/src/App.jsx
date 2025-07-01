@@ -58,7 +58,6 @@ function App() {
           <h1 className="text-2xl font-semibold flex items-center justify-center gap-2">
             <span role="img" aria-label="document">📄</span> Todo App
           </h1>
-          <p className="text-sm text-gray-500">Sekarang dengan fitur hapus todo!</p>
         </div>
 
         {/* Statistik */}
