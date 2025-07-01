@@ -1,50 +1,26 @@
-import { useState } from 'react'
-import './App.css'
+import { useState } from 'react';
+
 
 function App() {
   // State untuk menyimpan array todos
   const [todos, setTodos] = useState([
-    {
-      id: 1,
-      text: "Belajar React basics",
-      completed: false
-    },
-    {
-      id: 2, 
-      text: "Membuat Todo App",
-      completed: false
-    },
-    {
-      id: 3,
-      text: "Deploy ke Netlify", 
-      completed: true
-    }
+    { id: 1, text: "Belajar React basics", completed: false },
+    { id: 2, text: "Membuat Todo App", completed: false },
+    { id: 3, text: "Deploy ke Netlify", completed: false },
   ]);
 
-  // State untuk input form (controlled component)
+  // State untuk input form
   const [inputValue, setInputValue] = useState('');
 
   // Function untuk menambah todo baru
   const addTodo = (e) => {
-    e.preventDefault(); // Mencegah form submit refresh halaman
-    
-    // Validasi: jangan tambah todo kosong
+    e.preventDefault();
     if (inputValue.trim() === '') {
       alert('Todo tidak boleh kosong!');
       return;
     }
-
-    // Buat todo baru
-    const newTodo = {
-      id: Date.now(), // Simple ID generator (dalam app nyata pakai UUID)
-      text: inputValue.trim(),
-      completed: false
-    };
-
-    // Update state todos dengan todo baru
-    setTodos([...todos, newTodo]); // Spread operator untuk immutability
-    
-    // Reset input field
+    const newTodo = { id: Date.now(), text: inputValue.trim(), completed: false };
+    setTodos([...todos, newTodo]);
     setInputValue('');
   };
 
@@ -55,76 +31,122 @@ function App() {
 
   // Function untuk toggle status completed todo
   const toggleTodo = (todoId) => {
-    setTodos(todos.map(todo => 
-      todo.id === todoId 
-        ? { ...todo, completed: !todo.completed } // Toggle completed status
-        : todo // Kembalikan todo yang tidak berubah
+    setTodos(todos.map(todo =>
+      todo.id === todoId ? { ...todo, completed: !todo.completed } : todo
     ));
   };
 
+  // Function untuk menghapus todo
+  const deleteTodo = (todoId) => {
+    setTodos(todos.filter(todo => todo.id !== todoId));
+  };
+
+  // Function untuk menghapus semua todo yang selesai
+  const deleteCompletedTodos = () => {
+    setTodos(todos.filter(todo => !todo.completed));
+  };
+
+  // Hitung statistik
+  const totalTodos = todos.length;
+  const pendingTodos = todos.filter(todo => !todo.completed).length;
+  const completedTodos = todos.filter(todo => todo.completed).length;
+
   return (
-    <div className="app">
-      <div className="todo-container">
-        <h1 className="title">📝 Todo App - Step 3</h1>
-        
-        {/* Form untuk menambah todo baru */}
-        <form onSubmit={addTodo} className="add-todo-form">
-          <div className="input-group">
+    <div className="flex min-h-screen items-center justify-center bg-blue-50 p-6">
+      <div className="w-full max-w-md p-10 bg-white rounded-xl shadow-lg border-2 border-gray-300">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-semibold flex items-center justify-center gap-2">
+            <span role="img" aria-label="document">📄</span> Todo App
+          </h1>
+          <p className="text-sm text-gray-500">Sekarang dengan fitur hapus todo!</p>
+        </div>
+
+        {/* Statistik */}
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="p-4 bg-blue-100 rounded-lg text-center">
+            <span className="block text-sm text-gray-600">Total</span>
+            <span className="block text-lg font-medium">{totalTodos}</span>
+          </div>
+          <div className="p-4 bg-yellow-100 rounded-lg text-center">
+            <span className="block text-sm text-gray-600">Pending</span>
+            <span className="block text-lg font-medium">{pendingTodos}</span>
+          </div>
+          <div className="p-4 bg-green-100 rounded-lg text-center">
+            <span className="block text-sm text-gray-600">Selesai</span>
+            <span className="block text-lg font-medium">{completedTodos}</span>
+          </div>
+        </div>
+
+        {/* Form untuk menambah todo */}
+        <form onSubmit={addTodo} className="mb-6">
+          <div className="flex gap-4">
             <input
               type="text"
               value={inputValue}
               onChange={handleInputChange}
               placeholder="Masukkan todo baru..."
-              className="todo-input"
+              className="flex-1 p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
-            <button type="submit" className="add-btn">
+            <button
+              type="submit"
+              className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
               ➕ Tambah
             </button>
           </div>
         </form>
-        
-        {/* Menampilkan daftar todos */}
-        <div className="todo-list">
-          <h2 className="subtitle">
-            Daftar Todo ({todos.length} items)
-          </h2>
-          
-          {/* Mapping array todos menjadi list items */}
+
+        {/* Tombol Hapus Semua Selesai */}
+        {completedTodos > 0 && (
+          <button
+            onClick={deleteCompletedTodos}
+            className="w-full mb-6 p-3 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500"
+          >
+            Hapus Semua yang Selesai ({completedTodos})
+          </button>
+        )}
+
+        {/* Daftar Todo */}
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold mb-4">Daftar Todo</h2>
           {todos.map(todo => (
-            <div 
+            <div
               key={todo.id}
-              className={`todo-item ${todo.completed ? 'completed' : 'pending'}`}
+              className={`flex items-center p-4 mb-4 rounded-lg border-2 border-gray-300 ${todo.completed ? 'bg-green-50' : 'bg-yellow-50'}`}
             >
-              {/* Checkbox untuk toggle status - SEKARANG INTERACTIVE */}
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 checked={todo.completed}
-                onChange={() => toggleTodo(todo.id)} // Handle click
-                className="todo-checkbox"
+                onChange={() => toggleTodo(todo.id)}
+                className="mr-4 h-6 w-6 text-indigo-600 focus:ring-indigo-500"
               />
-              
-              {/* Text todo dengan styling conditional + click to toggle */}
-              <span 
-                className={`todo-text ${todo.completed ? 'strikethrough' : ''}`}
-                onClick={() => toggleTodo(todo.id)} // Bisa diklik untuk toggle
+              <span
+                className={`flex-1 ${todo.completed ? 'line-through text-gray-500' : 'text-gray-800'}`}
+                onClick={() => toggleTodo(todo.id)}
                 style={{ cursor: 'pointer' }}
               >
                 {todo.text}
               </span>
-              
-              {/* Status badge */}
-              <span className={`status-badge ${todo.completed ? 'status-completed' : 'status-pending'}`}>
-                {todo.completed ? 'Selesai' : 'Belum'}
+              <span className={`px-3 py-2 rounded text-sm ${todo.completed ? 'bg-green-200 text-green-800' : 'bg-yellow-200 text-yellow-800'}`}>
+                {todo.completed ? 'Selesai' : 'Pending'}
               </span>
+              <button
+                onClick={() => deleteTodo(todo.id)}
+                className="ml-4 p-2 text-gray-400 hover:text-gray-600 focus:outline-none"
+              >
+                <span role="img" aria-label="trash">🗑️</span>
+              </button>
             </div>
           ))}
         </div>
-        <div className="next-step">
-          <button 
+
+        {/* Tombol Next */}
+        <div className="text-center">
+          <button
             disabled
-            className="btn-disabled"
+            className="px-6 py-3 bg-gray-200 text-gray-500 rounded-lg cursor-not-allowed"
           >
-            Next: Step 4 - Delete Todo Feature
+            Next: Step 5 - Edit Todo Feature
           </button>
         </div>
       </div>
@@ -132,4 +154,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
