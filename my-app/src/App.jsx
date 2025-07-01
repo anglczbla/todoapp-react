@@ -140,14 +140,7 @@ function App() {
         </div>
 
         {/* Tombol Next */}
-        <div className="text-center">
-          <button
-            disabled
-            className="px-6 py-3 bg-gray-200 text-gray-500 rounded-lg cursor-not-allowed"
-          >
-            Next: Step 5 - Edit Todo Feature
-          </button>
-        </div>
+       
       </div>
     </div>
   );
