@@ -3,7 +3,6 @@ import './App.css'
 
 function App() {
   // State untuk menyimpan array todos
-  // mulai dengan beberapa data dummy untuk belajar
   const [todos, setTodos] = useState([
     {
       id: 1,
@@ -22,10 +21,58 @@ function App() {
     }
   ]);
 
+  // State untuk input form (controlled component)
+  const [inputValue, setInputValue] = useState('');
+
+  // Function untuk menambah todo baru
+  const addTodo = (e) => {
+    e.preventDefault(); // Mencegah form submit refresh halaman
+    
+    // Validasi: jangan tambah todo kosong
+    if (inputValue.trim() === '') {
+      alert('Todo tidak boleh kosong!');
+      return;
+    }
+
+    // Buat todo baru
+    const newTodo = {
+      id: Date.now(), // Simple ID generator (dalam app nyata pakai UUID)
+      text: inputValue.trim(),
+      completed: false
+    };
+
+    // Update state todos dengan todo baru
+    setTodos([...todos, newTodo]); // Spread operator untuk immutability
+    
+    // Reset input field
+    setInputValue('');
+  };
+
+  // Function untuk handle input change
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
   return (
     <div className="app">
       <div className="todo-container">
-        <h1 className="title">📝 Todo App - Step 1</h1>
+        <h1 className="title">📝 Todo App - Step 2</h1>
+        
+        {/* Form untuk menambah todo baru */}
+        <form onSubmit={addTodo} className="add-todo-form">
+          <div className="input-group">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={handleInputChange}
+              placeholder="Masukkan todo baru..."
+              className="todo-input"
+            />
+            <button type="submit" className="add-btn">
+              ➕ Tambah
+            </button>
+          </div>
+        </form>
         
         {/* Menampilkan daftar todos */}
         <div className="todo-list">
@@ -62,13 +109,14 @@ function App() {
         
         {/* Info box untuk penjelasan */}
         <div className="info-box">
-          <h3 className="info-title">🎯 Yang Dipelajari di Step 1:</h3>
+          <h3 className="info-title">🎯 Yang Dipelajari di Step 2:</h3>
           <ul className="info-list">
-            <li><strong>useState</strong> - Menyimpan array todos dalam state</li>
-            <li><strong>map()</strong> - Mengubah array menjadi JSX elements</li>
-            <li><strong>key prop</strong> - Identifier unik untuk setiap list item</li>
-            <li><strong>Conditional styling</strong> - Style berbeda berdasarkan status</li>
-            <li><strong>Template literals</strong> - Dynamic CSS classes</li>
+            <li><strong>Controlled Components</strong> - Input dengan value dari state</li>
+            <li><strong>Event Handling</strong> - onSubmit dan onChange</li>
+            <li><strong>preventDefault()</strong> - Mencegah form refresh halaman</li>
+            <li><strong>Spread Operator</strong> - [...todos, newTodo] untuk immutability</li>
+            <li><strong>Form Validation</strong> - Cek input tidak kosong</li>
+            <li><strong>State Updates</strong> - Menambah item ke array state</li>
           </ul>
         </div>
         
@@ -77,7 +125,7 @@ function App() {
             disabled
             className="btn-disabled"
           >
-            Next: Step 2 - Add Todo Feature
+            Next: Step 3 - Toggle Complete Feature
           </button>
         </div>
       </div>
