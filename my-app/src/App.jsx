@@ -53,10 +53,19 @@ function App() {
     setInputValue(e.target.value);
   };
 
+  // Function untuk toggle status completed todo
+  const toggleTodo = (todoId) => {
+    setTodos(todos.map(todo => 
+      todo.id === todoId 
+        ? { ...todo, completed: !todo.completed } // Toggle completed status
+        : todo // Kembalikan todo yang tidak berubah
+    ));
+  };
+
   return (
     <div className="app">
       <div className="todo-container">
-        <h1 className="title">📝 Todo App - Step 2</h1>
+        <h1 className="title">📝 Todo App - Step 3</h1>
         
         {/* Form untuk menambah todo baru */}
         <form onSubmit={addTodo} className="add-todo-form">
@@ -86,16 +95,20 @@ function App() {
               key={todo.id}
               className={`todo-item ${todo.completed ? 'completed' : 'pending'}`}
             >
-              {/* Checkbox untuk menunjukkan status */}
+              {/* Checkbox untuk toggle status - SEKARANG INTERACTIVE */}
               <input 
                 type="checkbox" 
                 checked={todo.completed}
-                readOnly
+                onChange={() => toggleTodo(todo.id)} // Handle click
                 className="todo-checkbox"
               />
               
-              {/* Text todo dengan styling conditional */}
-              <span className={`todo-text ${todo.completed ? 'strikethrough' : ''}`}>
+              {/* Text todo dengan styling conditional + click to toggle */}
+              <span 
+                className={`todo-text ${todo.completed ? 'strikethrough' : ''}`}
+                onClick={() => toggleTodo(todo.id)} // Bisa diklik untuk toggle
+                style={{ cursor: 'pointer' }}
+              >
                 {todo.text}
               </span>
               
@@ -106,26 +119,12 @@ function App() {
             </div>
           ))}
         </div>
-        
-        {/* Info box untuk penjelasan */}
-        <div className="info-box">
-          <h3 className="info-title">🎯 Yang Dipelajari di Step 2:</h3>
-          <ul className="info-list">
-            <li><strong>Controlled Components</strong> - Input dengan value dari state</li>
-            <li><strong>Event Handling</strong> - onSubmit dan onChange</li>
-            <li><strong>preventDefault()</strong> - Mencegah form refresh halaman</li>
-            <li><strong>Spread Operator</strong> - [...todos, newTodo] untuk immutability</li>
-            <li><strong>Form Validation</strong> - Cek input tidak kosong</li>
-            <li><strong>State Updates</strong> - Menambah item ke array state</li>
-          </ul>
-        </div>
-        
         <div className="next-step">
           <button 
             disabled
             className="btn-disabled"
           >
-            Next: Step 3 - Toggle Complete Feature
+            Next: Step 4 - Delete Todo Feature
           </button>
         </div>
       </div>
